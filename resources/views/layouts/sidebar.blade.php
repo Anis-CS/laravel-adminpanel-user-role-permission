@@ -117,8 +117,8 @@
                                 <i class="fa fa-angle-right pull-right"></i>
                             </span>
                         </a>
-                        {{-- <ul class="treeview-menu">
-                            @if ($user->can('settings.smtp_config'))
+                        <ul class="treeview-menu">
+                            {{-- @if ($user->can('settings.smtp_config'))
                                 <li class="@yield('settings.message-service')">
                                     <a href="{{ route('settings.message-service') }}">
                                         <i class="icon-Settings"><span class="path1"></span><span
@@ -143,16 +143,16 @@
                                                 class="path2"></span></i>
                                         VTS Configuration
                                     </a>
-                                </li>
+                                </li> --}}
                         
-                                <li class="@yield('settings.log-viewer')">
-                                    <a href="{{ route('log-viewer.index') }}">
+                                <li class="@yield('settings.env-editor')">
+                                    <a href="{{ url('env-editor') }}" target="_blank">
                                         <i class="icon-Settings"><span class="path1"></span><span class="path2"></span></i>
-                                        Log Viewer
+                                        Env Editor
                                     </a>
                                 </li>
                             
-                        </ul> --}}
+                        </ul>
                     </li>
                 @endif
             </ul>
