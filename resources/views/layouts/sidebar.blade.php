@@ -15,18 +15,18 @@
                 @endif
                 
                 @if ($user->can('admin.view') ||
-                        $user->can('admin.create') ||
-                        $user->can('admin.edit') ||
-                        $user->can('admin.delete') ||
-                        $user->can('role.view') ||
-                        $user->can('role.create') ||
-                        $user->can('role.edit') ||
-                        $user->can('role.delete') ||
-                        $user->can('permission.view') ||
-                        $user->can('permission.create') ||
-                        $user->can('permission.edit') ||
-                        $user->can('permission.delete'))
-                        {{-- <li class="header fs-10 m-0 text-uppercase">User Management</li> --}}
+                    $user->can('admin.create') ||
+                    $user->can('admin.edit') ||
+                    $user->can('admin.delete') ||
+                    $user->can('role.view') ||
+                    $user->can('role.create') ||
+                    $user->can('role.edit') ||
+                    $user->can('role.delete') ||
+                    $user->can('permission.view') ||
+                    $user->can('permission.create') ||
+                    $user->can('permission.edit') ||
+                    $user->can('permission.delete'))
+                        
                     <li class="treeview">
                         <a href="#">
                             <i data-feather="users"></i>
@@ -108,52 +108,35 @@
                                 </li>  
                         </ul>
                     </li>
-                
-                    <li class="treeview">
-                        <a href="#">
-                            <i data-feather="settings"></i>
-                            <span>Settings</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-right pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            {{-- @if ($user->can('settings.smtp_config'))
-                                <li class="@yield('settings.message-service')">
-                                    <a href="{{ route('settings.message-service') }}">
-                                        <i class="icon-Settings"><span class="path1"></span><span
-                                                class="path2"></span></i>
-                                        Message Service
-                                    </a>
-                                </li>
-                            @endif
-                            
-                                <li class="">
-                                    <a href="{{ route('settings.smtp-config') }}">
-                                        <i class="icon-Settings"><span class="path1"></span><span
-                                                class="path2"></span></i>
-                                        SMTP Configuration
-                                    </a>
-                                </li>
-                            
-                        
-                                <li class="">
-                                    <a href="{{ route('settings.vts-config') }}">
-                                        <i class="icon-Settings"><span class="path1"></span><span
-                                                class="path2"></span></i>
-                                        VTS Configuration
-                                    </a>
-                                </li> --}}
-                        
-                                <li class="@yield('settings.env-editor')">
-                                    <a href="{{ url('env-editor') }}" target="_blank">
-                                        <i class="icon-Settings"><span class="path1"></span><span class="path2"></span></i>
-                                        Env Editor
-                                    </a>
-                                </li>
-                            
-                        </ul>
-                    </li>
+                    
+                    @if($user->can('settings.view'))
+                        <li class="treeview">
+                            <a href="#">
+                                <i data-feather="settings"></i>
+                                <span>Settings</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-right pull-right"></i>
+                                </span>
+                            </a>
+
+                            <ul class="treeview-menu">
+
+                                @if ($user->can('settings.env_editor.view'))
+                                    <li class="@yield('settings.env_editor.view')">
+                                        <a href="{{ url('env-editor') }}" target="_blank">
+                                            <i class="icon-Settings">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            Env Editor
+                                        </a>
+                                    </li>
+                                @endif
+
+                            </ul>
+                        </li>
+                    @endif
+
                 @endif
             </ul>
         </div>

@@ -15,7 +15,7 @@ use GeoSot\EnvEditor\Controllers\EnvController;
 
 
 Route::middleware('auth')->group(function () {
-     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
      // Admin routes
     Route::get('roles', [RoleController::class, 'index'])->name('roles');
