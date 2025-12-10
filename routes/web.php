@@ -6,10 +6,12 @@ use App\Http\Controllers\Admin\AdminDashboard\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUser\AdminUserController;
 use App\Http\Controllers\Admin\Permissions\PermissionsController;
 use App\Http\Controllers\Admin\Roles\RoleController;
+use GeoSot\EnvEditor\Controllers\EnvController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 Route::middleware('auth')->group(function () {
