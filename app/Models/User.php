@@ -70,4 +70,13 @@ class User extends Authenticatable
             ->get();
         return $permissions;
     }
+    public function locations()
+    {
+        return $this->hasMany(UserLocation::class);
+    }
+
+    public function latestLocation()
+    {
+        return $this->hasOne(UserLocation::class)->latestOfMany();
+    }
 }

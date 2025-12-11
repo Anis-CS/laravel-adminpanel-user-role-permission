@@ -29,96 +29,96 @@ class UserLocationController extends Controller
         }
 
         if (session()->has('success')) {
-            toast(Session('success'), 'success');
+            toast(session('success'), 'success');
         }
 
         if (session()->has('error')) {
-            toast(Session('error'), 'error');
+            toast(session('error'), 'error');
         }
+        
         return view('admin.user_location.user_location');
     }
 
     public function getData()
     {
-        $can_view = '';
-        if (!auth()->user()->can('settings.user_location.view')) {
-            $can_view = "style='display:none;'";
-        }
+        try {
+            // Check permission
+            if (!auth()->user()->can('settings.user_location.view')) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
 
-        $user_location = UserLocation::latest()->get();
+            // Get user locations with user relationship
+            $user_locations = UserLocation::with('user')->latest()->get();
 
-        return DataTables::of($user_location)
-            ->addIndexColumn()
-            ->addColumn('user_id', function($row) {
-                $user = User::find($row->user_id); // Use find() instead of where()->first() for better readability
-                if ($user) {
-                    $badge = '';
-                    switch ($user->user_type) {
-                        case 1:
-                            $badge = '<span class="badge badge-primary">Super Admin</span>';
-                            break;
-                        case 2:
-                            $badge = '<span class="badge badge-info">Admin</span>';
-                            break;
-                        case 3:
-                            $badge = '<span class="badge badge-success">User</span>';
-                            break;
-                        case 4:
-                            $badge = '<span class="badge badge-success">Customer Care</span>';
-                            break;
-                        case 5:
-                            $badge = '<span class="badge badge-success">B2B User</span>';
-                            break;
-                        case 7:
-                            $badge = '<span class="badge badge-info">Operation</span>';
-                            break;
-                        case 8:
-                            $badge = '<span class="badge badge-info">Manager</span>';
-                            break;
-                        case 9:
-                            $badge = '<span class="badge badge-info">Brand Team</span>';
-                            break;
-                        case 10:
-                            $badge = '<span class="badge badge-info">Garibook Insurance</span>';
-                            break;
-                        case 12:
-                            $badge = '<span class="badge badge-info">Accounts</span>';
-                            break;
-                        case 13:
-                            $badge = '<span class="badge badge-info">Enterprise</span>';
-                            break;
-                        case 14:
-                            $badge = '<span class="badge badge-info">Field User</span>';
-                            break;
-                        default:
-                            $badge = '<span class="badge badge-secondary">Unknown User Type</span>';
-                            break;
+            return DataTables::of($user_locations)
+                ->addIndexColumn()
+                ->addColumn('user_id', function($row) {
+                    if ($row->user) {
+                        $badge = $this->getUserTypeBadge($row->user->user_type);
+                        return '<div>' .
+                               '<strong>' . $row->user->full_name . '</strong><br>' . 
+                               '<small>' . $row->user->email . '</small><br>' . 
+                               $badge .
+                               '</div>';
                     }
+                    return '<span class="text-danger">User not found</span>';
+                })
+                ->addColumn('ip_address', function($row) {
+                    return $row->ip_address ?? 'N/A';
+                })
+                ->addColumn('country_name', function($row) {
+                    return $row->country_name ?? 'N/A';
+                })
+                ->addColumn('region_name', function($row) {
+                    return $row->region_name ?? 'N/A';
+                })
+                ->addColumn('city_name', function($row) {
+                    return $row->city_name ?? 'N/A';
+                })
+                ->addColumn('zip_code', function($row) {
+                    return $row->zip_code ?? 'N/A';
+                })
+                ->addColumn('created_at', function($row) {
+                    return $row->created_at->format('d M Y, g:i A');
+                })
+                ->addColumn('view_location', function($row) {
+                    if ($row->latitude && $row->longitude) {
+                        $mapUrl = "https://www.google.com/maps?q={$row->latitude},{$row->longitude}";
+                        return '<a href="' . $mapUrl . '" target="_blank" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-map-marker"></i> View
+                                </a>';
+                    }
+                    return '<span class="text-muted">N/A</span>';
+                })
+                ->rawColumns(['user_id', 'view_location'])
+                ->make(true);
+                
+        } catch (\Exception $e) {
+            Log::error('UserLocation getData error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-                    return $user->full_name . '<br>' . $user->email . '<br>' . $badge; // Return full name along with the badge
-                }
-                return 'User not found'; // Handle case where user does not exist
-            })
-            ->addColumn('view_location', function($row) {
-                $latitude = $row->latitude;
-                $longitude = $row->longitude;
+    /**
+     * Get user type badge HTML
+     */
+    private function getUserTypeBadge($userType)
+    {
+        $badges = [
+            1 => '<span class="badge badge-danger">Super Admin</span>',
+            2 => '<span class="badge badge-info">Admin</span>',
+            3 => '<span class="badge badge-success">User</span>',
+            4 => '<span class="badge badge-warning">Customer Care</span>',
+            5 => '<span class="badge badge-primary">B2B User</span>',
+            7 => '<span class="badge badge-info">Operation</span>',
+            8 => '<span class="badge badge-dark">Manager</span>',
+            9 => '<span class="badge badge-purple">Brand Team</span>',
+            10 => '<span class="badge badge-secondary">Garibook Insurance</span>',
+            12 => '<span class="badge badge-info">Accounts</span>',
+            13 => '<span class="badge badge-primary">Enterprise</span>',
+            14 => '<span class="badge badge-success">Field User</span>',
+        ];
 
-                // Log the latitude and longitude
-                Log::info("Latitude: $latitude, Longitude: $longitude");
-
-                // Check if latitude and longitude are valid
-                if ($latitude && $longitude) {
-                    $mapUrl = "https://www.google.com/maps?q={$latitude},{$longitude}";
-                    return '<a href="' . $mapUrl . '" target="_blank" class="btn btn-primary">View Location</a>';
-                }
-
-                return 'Location not available'; // Handle case where lat/lng are null
-            })
-            ->addColumn('created_at', function($row) {
-                return $row->created_at->format('Y-m-d g:i:s A');
-            })
-            ->rawColumns(['user_id', 'view_location']) // Change to 'user_id' to allow raw HTML for this column
-            ->make(true);
+        return $badges[$userType] ?? '<span class="badge badge-secondary">Unknown</span>';
     }
 }
-

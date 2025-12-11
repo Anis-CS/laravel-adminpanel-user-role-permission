@@ -57,6 +57,7 @@ Route::middleware(['auth','web'])->group(function () {
     Route::get('action-history/view/{id}', [ActionHistoryController::class, 'viewDetails'])->name('action-history.view');
 
     //=================== UserLocationController ===================
+
     Route::get('/user/location', [UserLocationController::class, 'user_location'])->name('location.user');
     Route::get('/user/location/get', [UserLocationController::class, 'getData'])->name('location.user-get');
 
