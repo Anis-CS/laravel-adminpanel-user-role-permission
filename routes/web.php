@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ActionHistory\ActionHistoryController;
+use App\Http\Controllers\Admin\UserLocation\UserLocationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboard\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUser\AdminUserController;
@@ -14,7 +16,7 @@ use GeoSot\EnvEditor\Controllers\EnvController;
 // });
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','web'])->group(function () {
      Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
      // Admin routes
@@ -42,14 +44,23 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/deactive/{id}', [AdminUserController::class, 'deactiveUser'])->name('admin.deactive');
     Route::get('admin/active/{id}', [AdminUserController::class, 'activeUser'])->name('admin.active');
 
-    // Settings routes
+     //=================== Settings routes ===================
     Route::get('settings/smtp-config', [SMTPConfigController::class, 'create'])->name('settings.smtp-config');
     Route::post('settings/smtp-config/store', [SMTPConfigController::class, 'store'])->name('settings.smtp-config.store');
     Route::post('/settings/smtp/test-email', [SMTPConfigController::class, 'testEmail'])->name('settings.smtp-config.test-email');
 
-        // VTS configuration routes
-    Route::get('settings/vts-config', [VTSConfigController::class, 'create'])->name('settings.vts-config');
-    Route::post('settings/vts-config/store', [VTSConfigController::class, 'store'])->name('settings.vts-config.store');
+    //=================== Action History ===================
+
+    Route::get('action-history', [ActionHistoryController::class, 'index'])->name('action-history.index');
+    Route::get('action-history/get', [ActionHistoryController::class, 'getHistory'])->name('action-history.get');
+    Route::post('action-history/store', [ActionHistoryController::class, 'store'])->name('action-history.store');
+    Route::get('action-history/view/{id}', [ActionHistoryController::class, 'viewDetails'])->name('action-history.view');
+
+    //=================== UserLocationController ===================
+    Route::get('/user/location', [UserLocationController::class, 'user_location'])->name('location.user');
+    Route::get('/user/location/get', [UserLocationController::class, 'getData'])->name('location.user-get');
+
+
 });
 
 require __DIR__.'/auth.php';

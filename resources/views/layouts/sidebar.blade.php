@@ -109,7 +109,10 @@
                         </ul>
                     </li>
                     
-                    @if($user->can('settings.view'))
+                    @if($user->can('settings.view') ||
+                        $user->can('settings.env_editor.view') ||
+                        $user->can('settings.user_location.view'))
+
                         <li class="treeview">
                             <a href="#">
                                 <i data-feather="settings"></i>
@@ -129,6 +132,22 @@
                                                 <span class="path2"></span>
                                             </i>
                                             Env Editor
+                                        </a>
+                                    </li>
+                                @endif
+                                @if($user->can('settings.action_history.index'))
+                                    <li class="@yield('action_history')">
+                                        <a href="{{ route('action-history.index') }}" target="_blank">
+                                            <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Action History
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- User Location --}}
+                                @if($user->can('settings.user_location.view'))
+                                    <li class="@yield('location.user-view')">
+                                        <a href="{{ route('location.user') }}">
+                                            <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>User Location
                                         </a>
                                     </li>
                                 @endif
