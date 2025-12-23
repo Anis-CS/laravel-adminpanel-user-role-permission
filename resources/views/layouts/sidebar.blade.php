@@ -123,6 +123,13 @@
                             </a>
 
                             <ul class="treeview-menu">
+                                @if($user->can('settings.log_viewer.view'))
+                                    <li class="@yield('log_viewer.view')">
+                                        <a href="{{ url('logs') }}" target="_blank">
+                                            <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Log Viewer
+                                        </a>
+                                    </li>
+                                @endif
 
                                 @if ($user->can('settings.env_editor.view'))
                                     <li class="@yield('settings.env_editor.view')">
@@ -146,7 +153,7 @@
                                 {{-- User Location --}}
                                 @if($user->can('settings.user_location.view'))
                                     <li class="@yield('location.user-view')">
-                                        <a href="{{ route('location.user') }}">
+                                        <a href="{{ route('location.user-view') }}">
                                             <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>User Location
                                         </a>
                                     </li>

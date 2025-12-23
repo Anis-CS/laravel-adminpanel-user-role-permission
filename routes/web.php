@@ -58,10 +58,12 @@ Route::middleware(['auth','web'])->group(function () {
 
     //=================== UserLocationController ===================
 
-    Route::get('/user/location', [UserLocationController::class, 'user_location'])->name('location.user');
+    Route::get('/user/location', [UserLocationController::class, 'user_location'])->name('location.user-view');
+
     Route::get('/user/location/get', [UserLocationController::class, 'getData'])->name('location.user-get');
-
-
+    // Log Viewer routes
+     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+     
 });
 
 require __DIR__.'/auth.php';
