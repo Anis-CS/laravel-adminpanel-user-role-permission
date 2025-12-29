@@ -82,7 +82,7 @@
                     <li class="treeview">
                         <a href="#">
                             <i data-feather="calendar"></i>
-                            <span>Booking Management</span>
+                            <span>Product Management</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-right pull-right"></i>
                             </span>
@@ -94,7 +94,7 @@
                                         <i class="icon-Commit">
                                             <span class="path1"></span>
                                             <span class="path2"></span>
-                                        </i>All Booking Management
+                                        </i>Product
                                     </a>
                                 </li>
                             
@@ -103,7 +103,7 @@
                                         <i class="icon-Commit">
                                             <span class="path1"></span>
                                             <span class="path2"></span>
-                                        </i>Create Booking
+                                        </i>Add New Product
                                     </a>
                                 </li>  
                         </ul>
