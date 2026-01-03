@@ -15,8 +15,8 @@ use GeoSot\EnvEditor\Controllers\EnvController;
 //     return view('welcome');
 // });
 
-
 Route::middleware(['auth','web'])->group(function () {
+  
      Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
      // Admin routes
