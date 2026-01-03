@@ -111,6 +111,7 @@
                     
                     @if($user->can('settings.view') ||
                         $user->can('settings.env_editor.view') ||
+                        $user->can('settings.action_history.index') ||
                         $user->can('settings.user_location.view'))
 
                         <li class="treeview">
@@ -158,7 +159,6 @@
                                         </a>
                                     </li>
                                 @endif
-
                             </ul>
                         </li>
                     @endif
