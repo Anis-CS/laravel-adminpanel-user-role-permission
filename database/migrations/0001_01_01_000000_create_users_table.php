@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('role_id')->nullable();
+            $table->tinyInteger('user_type')->comment('1 = Super-Admin, 2 = Admin, 3 = User');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

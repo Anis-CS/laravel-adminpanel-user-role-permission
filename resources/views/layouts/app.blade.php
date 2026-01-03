@@ -19,6 +19,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
     @yield('styles')
 
@@ -128,6 +129,9 @@
     <script src="{{ asset('admin/assets/js/vendors.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/pages/chat-popup.js') }}"></script>
     <script src="{{ asset('admin/assets/icons/feather-icons/feather.min.js') }}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <!-- 3. Load jQuery Plugins -->
     <script src="{{ asset('admin/assets/vendor_components/jvectormap/lib2/jquery-jvectormap-2.0.2.min.js') }}"></script>
