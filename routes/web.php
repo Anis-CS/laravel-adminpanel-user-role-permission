@@ -9,12 +9,21 @@ use App\Http\Controllers\Admin\AdminUser\AdminUserController;
 use App\Http\Controllers\Admin\Permissions\PermissionsController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use GeoSot\EnvEditor\Controllers\EnvController;
+use App\Http\Controllers\Auth\TwoFactorController;
 
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/2fa', [TwoFactorController::class, 'index'])
+    ->name('2fa.index');
 
+Route::post('/2fa', [TwoFactorController::class, 'verify'])
+    ->name('2fa.verify');
+
+// Route::middleware(['auth', '2fa'])->group(function () {
+//     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+// });
 Route::middleware(['auth','web'])->group(function () {
 
      Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');

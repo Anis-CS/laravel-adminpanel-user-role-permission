@@ -28,7 +28,7 @@
         }
 
         .login-bg {
-            background-image: url('admin/assets/images/login_admin/login_bg.webp');
+            background-image: url('admin/assets/images/login_admin/store-banner.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -218,7 +218,7 @@
 
             <!-- Right side - background image with logo -->
             <div class="col-lg-6 login-bg d-none d-lg-flex justify-content-end align-items-start py-2">
-                <img class="brand_logo" src="{{ asset('admin/assets/images/login_admin/logo_white.png') }}"
+                <img class="brand_logo" src="{{ asset('admin/assets/images/login_admin/download.png') }}"
                     alt="Brand Logo" />
             </div>
         </div>

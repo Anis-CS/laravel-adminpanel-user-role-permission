@@ -26,9 +26,23 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = Auth::user();
+
+        if ($user->google2fa_enabled) {
+
+            session(['2fa:user:id' => $user->id]);
+
+            // Session ডিস্কে লিখে দিন
+            session()->save();
+
+            Auth::guard('web')->logout();
+
+            return redirect()->route('2fa.index');
+        }
+
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard'));
     }
 
     /**

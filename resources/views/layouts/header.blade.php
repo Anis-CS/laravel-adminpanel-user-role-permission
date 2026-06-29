@@ -5,20 +5,12 @@
             <!-- logo-->
             <div class="logo-mini w-160 me-2">
                 <span class="light-logo">
-                    <img src="{{ asset('admin/assets/images/login_admin/vms_logo_black.svg') }}" alt="logo">
+                    <img src="{{ asset('admin/assets/images/login_admin/vms_logo_black') }}" alt="logo">
                 </span>
                 <span class="dark-logo">
                     <img src="{{ asset('admin/assets/images/login_admin/vms_logo_white.svg') }}" alt="logo">
                 </span>
             </div>
-            {{-- <div class="logo-lg me-2">
-                <span class="light-logo">
-                    <img src="{{ asset('admin/assets/images/login_admin/vms_logo.png') }}" alt="logo">
-                </span> 
-                <span class="dark-logo">
-                    <img src="{{ asset('admin/assets/images/login_admin/vms_logo.png') }}" alt="logo">
-                </span>
-            </div> --}}
         </a>
     </div>
 
