@@ -12,16 +12,17 @@
 
 @section('content')
     <div class="row">
-        <div class="col-12 mb-3 d-flex justify-content-end">
-            <a href="{{ route('admin.create') }}" class="btn btn-primary">
-                <i class="mdi mdi-plus me-1"></i> Create Admin
-            </a>
-        </div>
-
+        
         <div class="col-12">
             <div class="box">
-                <div class="box-header with-border">
-                    <h4 class="box-title">All Admin</h4>
+                <div class="box-header d-flex justify-content-between align-items-center">
+
+                    <h4 class="box-title mb-0">All Admin</h4>
+
+                    <a href="{{ route('admin.create') }}" class="btn btn-primary">
+                        <i class="mdi mdi-plus me-1"></i> Create Admin
+                    </a>
+
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -43,31 +44,45 @@
                                     <tr>
                                         <td class="text-dark">{{ $loop->iteration }}</td>
                                         <td>
-                                            @if (Auth::guard('web')->user()->can('admin.edit'))
-                                            <a href="{{ route('admin.edit', $row->id) }}" class="btn btn-sm btn-info">
-                                                <i class="mdi mdi-pencil"></i>
-                                                <span>Edit</span>
-                                            </a>
-                                            @endif
-                                            @if (Auth::guard('web')->user()->can('admin.delete'))
-                                            <a href="{{ route('admin.delete', $row->id) }}" class="btn btn-sm btn-danger">
-                                                <i class="mdi mdi-trash-can"></i>
-                                                <span>Delete</span>
-                                            </a>
-                                            @endif
-                                            @if (Auth::guard('web')->user()->can('admin.status'))
+                                            {{-- VIEW --}}
+                                            @can('admin.view')
+                                                <a href="{{ route('admin.view', $row->id) }}" class="btn btn-sm btn-info">
+                                                    <i class="mdi mdi-eye"></i> View
+                                                </a>
+                                            @endcan
+
+                                            {{-- EDIT --}}
+                                            @can('admin.edit')
+                                                <a href="{{ route('admin.edit', $row->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="mdi mdi-pencil"></i> Edit
+                                                </a>
+                                            @endcan
+
+                                            {{-- DELETE --}}
+                                            @can('admin.delete')
+                                                <a href="{{ route('admin.delete', $row->id) }}"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this user?')">
+                                                    <i class="mdi mdi-trash-can"></i> Delete
+                                                </a>
+                                            @endcan
+
+
+                                            {{-- STATUS TOGGLE --}}
+                                            @can('admin.status')
+
                                                 @if ($row->status == 1)
                                                     <a href="{{ route('admin.deactive', $row->id) }}" class="btn btn-sm btn-warning">
-                                                        <i class="mdi mdi-close"></i>
-                                                        <span>Deactivate</span>
+                                                        <i class="mdi mdi-close"></i> Deactivate
                                                     </a>
                                                 @else
-                                                <a href="{{ route('admin.active', $row->id) }}" class="btn btn-sm btn-success">
-                                                    <i class="mdi mdi-close"></i>
-                                                    <span>Activate</span>
-                                                </a>
+                                                    <a href="{{ route('admin.active', $row->id) }}" class="btn btn-sm btn-success">
+                                                        <i class="mdi mdi-check"></i> Activate
+                                                    </a>
                                                 @endif
-                                            @endif
+
+                                            @endcan
+
                                         </td>
                                         <td>{{ $row->name }}</td>
                                         <td>{{ $row->role->name }}</td>
@@ -75,9 +90,9 @@
                                         <td>{{ $row->contact }}</td>
                                         <td>
                                             @if ($row->status == 1)
-                                                <span class="badge badge-success">Active</span>
+                                                <span class="badge bg-success">Active</span>
                                             @else
-                                                <span class="badge badge-danger">Inactive</span>
+                                                <span class="badge bg-danger">Inactive</span>
                                             @endif
                                         </td>
                                         <td>{{ $row->created_at }}</td>

@@ -16,7 +16,7 @@ use GeoSot\EnvEditor\Controllers\EnvController;
 // });
 
 Route::middleware(['auth','web'])->group(function () {
-  
+
      Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
      // Admin routes
@@ -35,6 +35,7 @@ Route::middleware(['auth','web'])->group(function () {
 
     // Admin user management routes
     Route::get('admins', [AdminUserController::class, 'index'])->name('admin.index');
+    Route::get('/admin/{id}/view',[AdminUserController::class, 'getUser'])->name('admin.view');
     Route::get('admin/create', [AdminUserController::class, 'createUser'])->name('admin.create');
     Route::post('admin/store', [AdminUserController::class, 'storeUser'])->name('admin.store');
     Route::get('admin/edit/{id}', [AdminUserController::class, 'editUser'])->name('admin.edit');

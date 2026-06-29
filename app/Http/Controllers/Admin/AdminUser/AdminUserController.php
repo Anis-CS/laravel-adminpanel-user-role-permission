@@ -8,6 +8,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
+use PragmaRX\Google2FA\Google2FA;
 
 class AdminUserController extends Controller
 {
@@ -29,6 +34,41 @@ class AdminUserController extends Controller
 
         $user = User::latest()->get();
         return view('admin.admin_user.index', ['users' => $user]);
+    }
+
+    public function getUser($id)
+    {
+        if (is_null($this->user) || !$this->user->can('admin.view')) {
+            abort(403, 'You are Unauthorized to access this page!');
+        }
+
+        $user = User::findOrFail($id);
+
+        $qrCode = null;
+
+        if ($user->google2fa_secret) {
+
+            $google2fa = new Google2FA();
+
+            $qrCodeUrl = $google2fa->getQRCodeUrl(
+                config('app.name'),
+                $user->email,
+                $user->google2fa_secret
+            );
+
+            $renderer = new ImageRenderer(
+                new RendererStyle(300),
+                new SvgImageBackEnd()
+            );
+
+            $writer = new Writer($renderer);
+
+            $qrCode = base64_encode(
+                $writer->writeString($qrCodeUrl)
+            );
+        }
+
+        return view('admin.admin_user.show', compact('user', 'qrCode'));
     }
 
     public function createUser()
@@ -56,21 +96,29 @@ class AdminUserController extends Controller
             'contact' => 'nullable|string|unique:users,contact',
         ]);
 
-        // $role_id = $request->role_id;
+        $google2fa = new Google2FA();
+
+        $role_id = $request->role_id;
         $adminUser = new User();
         $adminUser->name = $request->name;
         $adminUser->email = $request->email;
+        $adminUser->user_type = 1;
         $adminUser->password = Hash::make($request->password);
         $adminUser->contact = $request->contact;
         $adminUser->status = $request->status;
         $adminUser->role_id = (int) $role_id;
-        // $adminUser->assignRole($adminUser->role_id);
+        $adminUser->google2fa_secret = $google2fa->generateSecretKey();
+        $adminUser->google2fa_enabled = 1;
+        
         if ($adminUser->save()) {
             return redirect()->route('admin.index')->with('success', 'Admin created successfully');
         } else {
             return back()->with('error', 'Failed to create admin');
         }
     }
+
+
+
 
     public function editUser($id)
     {
@@ -98,30 +146,49 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6',
-            'role_id' => 'required|exists:roles,id',
+            'role_name' => 'required|exists:roles,name',
             'status' => 'required|in:1,2',
             'contact' => 'required|string|unique:users,contact,' . $user->id,
         ]);
 
+        // check email change
+        $emailChanged = $user->email !== $request->email;
+
+        // update basic info
         $user->name = $request->name;
         $user->email = $request->email;
         $user->contact = $request->contact;
         $user->status = $request->status;
-        $user->role_id = (int) $request->role_id;
 
+        // password update
         if (!empty($request->password)) {
             $user->password = Hash::make($request->password);
-        } else {
-            $user->password = $user->password;
         }
 
-        $user->syncRoles([$user->role_id]);
+        /**
+         * 🔥 ROLE (Spatie correct way)
+         */
+        $user->syncRoles([$request->role_name]);
+
+        /**
+         * 🔐 QR / 2FA regenerate logic
+         * email or password change হলে নতুন secret generate
+         */
+        if ($emailChanged || !empty($request->password)) {
+
+            $google2fa = new Google2FA();
+
+            $user->google2fa_secret = $google2fa->generateSecretKey();
+            $user->google2fa_enabled = 1;
+        }
 
         if ($user->save()) {
-            return redirect()->route('admin.index')->with('success', 'Admin updated successfully');
-        } else {
-            return back()->with('error', 'Failed to update admin');
+            return redirect()
+                ->route('admin.index')
+                ->with('success', 'User updated successfully & QR regenerated');
         }
+
+        return back()->with('error', 'Failed to update admin');
     }
 
 
@@ -143,18 +210,6 @@ class AdminUserController extends Controller
         return redirect()->route('admin.index')->with('error', 'Failed to delete user');
     }
 
-    public function getUser($id)
-    {
-        if (is_null($this->user) || !$this->user->can('admin.view')) {
-            abort(403, 'You are Unauthorized to access this page!');
-        }
-
-        $user = User::findOrFail($id);
-        if (!$user) {
-            return redirect()->route('admin.index')->with('error', 'User not found');
-        }
-        return view('admin.admin-user.show', ['user' => $user]);
-    }
     public function deactiveUser($id)
     {
         if (is_null($this->user) || !$this->user->can('admin.status')) {

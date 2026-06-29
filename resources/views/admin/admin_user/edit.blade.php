@@ -68,17 +68,17 @@
 
                             <div class="form-group">
                                 <label class="form-label">Assign Role <span class="text-danger">*</span></label>
-                                <select class="form-control select2" name="role_id" required>
+
+                                <select class="form-control select2" name="role_name" required>
                                     <option value="" disabled>Select Role</option>
+
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
+                                        <option value="{{ $role->name }}"
+                                            {{ $user->hasRole($role->name) ? 'selected' : '' }}>
                                             {{ $role->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('role_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
                             </div>
 
                             <div class="form-group">
