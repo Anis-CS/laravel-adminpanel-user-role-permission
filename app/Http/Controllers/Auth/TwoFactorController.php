@@ -44,9 +44,17 @@ class TwoFactorController extends Controller
             ]);
         }
 
-        Auth::login($user);
+        Auth::login(
+            $user,
+            session('remember', false)
+        );
 
-        session()->forget('2fa:user:id');
+        $request->session()->regenerate();
+
+        session()->forget([
+            '2fa:user:id',
+            'remember',
+        ]);
 
         return redirect()->route('dashboard');
     }

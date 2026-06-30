@@ -24,21 +24,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $user = $request->validateCredentials();
 
-        $user = Auth::user();
-
+        // যদি 2FA enabled থাকে
         if ($user->google2fa_enabled) {
 
-            session(['2fa:user:id' => $user->id]);
-
-            // Session ডিস্কে লিখে দিন
-            session()->save();
-
-            Auth::guard('web')->logout();
+            session([
+                '2fa:user:id' => $user->id,
+                'remember' => $request->boolean('remember'),
+            ]);
 
             return redirect()->route('2fa.index');
         }
+
+        // 2FA না থাকলে normal login
+        Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
 
