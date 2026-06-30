@@ -15,13 +15,12 @@ use App\Http\Controllers\Auth\TwoFactorController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-    Route::get('/2fa', [TwoFactorController::class, 'index'])->name('2fa.index');
-    Route::post('/2fa', [TwoFactorController::class, 'verify'])->name('2fa.verify');
+Route::get('/2fa', [TwoFactorController::class, 'index'])->name('2fa.index');
+Route::post('/2fa', [TwoFactorController::class, 'verify'])->name('2fa.verify');
 
 Route::middleware(['auth', 'web'])->group(function () {
 
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-
 
      // Admin routes
     Route::get('roles', [RoleController::class, 'index'])->name('roles');

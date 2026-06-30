@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = $request->validateCredentials();
 
-        // যদি 2FA enabled থাকে
+        // if 2FA enabled 
         if ($user->google2fa_enabled) {
 
             session([
@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('2fa.index');
         }
 
-        // 2FA না থাকলে normal login
+        // 2FA don't normal login
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();

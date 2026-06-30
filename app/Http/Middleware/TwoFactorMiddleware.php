@@ -14,14 +14,14 @@ class TwoFactorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // যদি user login না থাকে
+        // if not user login 
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         $user = Auth::user();
 
-        // যদি user এর 2FA enabled থাকে কিন্তু verify না করে
+        // if user has 2FA enabled but hasn't verified it
         if (
             $user->google2fa_enabled &&
             !session()->has('2fa_verified')
